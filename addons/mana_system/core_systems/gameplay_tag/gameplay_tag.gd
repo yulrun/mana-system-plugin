@@ -1,6 +1,7 @@
 ## Mana System Plugin (Modular Ability & Networked Attributes)
 ## Created by Matthew Janes (IndieGameDad) - 2025
 ##
+## System: Gameplay Tag System
 ## The Main resource for the GameplayTag System, used throughout the plugin
 
 @tool class_name GameplayTag extends Resource
