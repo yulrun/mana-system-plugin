@@ -1,14 +1,14 @@
 ## Mana System Plugin (Modular Ability & Networked Attributes)
 ## Created by Matthew Janes (IndieGameDad) - 2025
 ##
-## System: Gameplay Tag System
-## A container used to house GameplayTag's with a lot of useful helper functions
+## System: Mana Tag System
+## A container used to house ManaTag's with a lot of useful helper functions
 
-@tool class_name GameplayTagContainer extends Resource
+@tool class_name ManaTagContainer extends Resource
 
 
-signal tag_added(tag: GameplayTag, source: Node)
-signal tag_removed(tag: GameplayTag, source: Node)
+signal tag_added(tag: ManaTag, source: Node)
+signal tag_removed(tag: ManaTag, source: Node)
 
 @export var tags_mana_taglist: Array[String] = []:
 	set(value):
@@ -16,13 +16,13 @@ signal tag_removed(tag: GameplayTag, source: Node)
 	get():
 		return get_flat_tag_names()
 
-var tags: Dictionary = {} # keys are GameplayTags and its value are an Array[Node] (sources)
+var tags: Dictionary = {} # keys are ManaTags and its value are an Array[Node] (sources)
 var _flat_tag_name_cache: Array[String] = []
 
 
 ## Description: Adds a tag from the given source
-## Usage: Used by GameplayTagComponent and other systems
-func add_tag(tag: GameplayTag, source: Node) -> void:
+## Usage: Used by ManaTagComponent and other systems
+func add_tag(tag: ManaTag, source: Node) -> void:
 	if not tags.has(tag):
 		if not _flat_tag_name_cache.has(tag.tag_name):
 			_flat_tag_name_cache.append(tag.tag_name)
@@ -34,7 +34,7 @@ func add_tag(tag: GameplayTag, source: Node) -> void:
 
 ## Description: Removes a source from a tag, and removes tag if last source
 ## Usage: Used when effects or abilities end
-func remove_tag(tag: GameplayTag, source: Node) -> void:
+func remove_tag(tag: ManaTag, source: Node) -> void:
 	if not tags.has(tag) or not tags[tag].has(source):
 		return
 	
@@ -49,7 +49,7 @@ func remove_tag(tag: GameplayTag, source: Node) -> void:
 
 ## Description: Forcefully removes a Tag no matter the sources
 ## Usage: Used in an override state
-func force_remove_tag(tag: GameplayTag) -> void:
+func force_remove_tag(tag: ManaTag) -> void:
 	if not tags.has(tag):
 		return
 	_flat_tag_name_cache.erase(tag.tag_name)
@@ -82,7 +82,9 @@ func remove_all_tags() -> void:
 	tags.clear()
 
 
-func get_tags() -> Array[GameplayTag]:
+## Description: Returns an array of all active ManaTag resources in the container
+## Usage: Used when iterating over all tracked tags or merging containers
+func get_tags() -> Array[ManaTag]:
 	return tags.keys()
 
 
@@ -97,7 +99,7 @@ func get_sources_for_tag(flat_name: String) -> Array[Node]:
 
 ## Description: Returns the tag resource for a flat name
 ## Usage: Used for lookups from external systems
-func get_tag_by_flat_name(flat_name: String) -> GameplayTag:
+func get_tag_by_flat_name(flat_name: String) -> ManaTag:
 	for tag in tags.keys():
 		if tag.tag_name == flat_name:
 			return tag
@@ -145,7 +147,7 @@ func has_none(flat_names: Array[String]) -> bool:
 
 ## Description: Merges another container's tags into this one, preserving all sources
 ## Usage: Used when combining tag sets from different systems (e.g. abilities, effects)
-func merge(container: GameplayTagContainer) -> void:
+func merge(container: ManaTagContainer) -> void:
 	for tag in container.get_tags():
 		var flat_name: String = tag.tag_name
 		var sources: Array[Node] = container.get_sources_for_tag(flat_name)
@@ -165,7 +167,7 @@ func merge(container: GameplayTagContainer) -> void:
 ## Description: Removes empty tag references from tags
 ## Usage: Only for manual debugging, never should be needed unless a bug happens
 func prune_empties() -> void:
-	var tags_to_remove: Array[GameplayTag] = []
+	var tags_to_remove: Array[ManaTag] = []
 	for tag in tags.keys():
 		if tags[tag] == null or tags[tag].is_empty():
 			tags_to_remove.append(tag)
