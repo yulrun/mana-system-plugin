@@ -8,8 +8,15 @@
 
 const SUFFIX_HANDLE_TAGLIST: String = "mana_taglist"
 
+var mana_suffix_handler_plugin: ManaSuffixHandler
+
+## Registry Paths
+const MANA_TAG_REGISTRY_PATH: String = "res://addons/mana_system/data/mana_tag_registry.tres"
+
 
 func _enter_tree() -> void:
+	mana_suffix_handler_plugin = ManaSuffixHandler.new()
+	add_inspector_plugin(mana_suffix_handler_plugin)
 	add_control_to_bottom_panel(Control.new(), "Mana System")
 	
 	var refs: EditorFileSystem = get_editor_interface().get_resource_filesystem()
@@ -18,8 +25,13 @@ func _enter_tree() -> void:
 
 
 func _exit_tree() -> void:
-	pass
+	if mana_suffix_handler_plugin:
+		remove_inspector_plugin(mana_suffix_handler_plugin)
 
 
 func _update_dynamic_enums() -> void:
 	pass
+
+
+static func get_mana_tag_registry(cache_mode: ResourceLoader.CacheMode = 1) -> ManaTagRegistry: 
+	return ResourceLoader.load(MANA_TAG_REGISTRY_PATH, "Resource", cache_mode)

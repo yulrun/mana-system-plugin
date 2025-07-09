@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="ManaTagRegistry" load_steps=5 format=3 uid="uid://cw5lhkc5qshls"]
+
+[ext_resource type="Script" uid="uid://kq4ftwrcls28" path="res://addons/mana_system/core_systems/mana_tag/mana_tag.gd" id="1_5eev1"]
+[ext_resource type="Script" uid="uid://cqntyk5vh5kv7" path="res://addons/mana_system/core_systems/mana_tag/mana_tag_registry.gd" id="1_hf34i"]
+
+[sub_resource type="Resource" id="Resource_w4o56"]
+script = ExtResource("1_5eev1")
+tag_name = "Test.Tag"
+metadata/_custom_type_script = "uid://kq4ftwrcls28"
+
+[sub_resource type="Resource" id="Resource_lvu40"]
+script = ExtResource("1_5eev1")
+is_cue = true
+tag_name = "Cue.Test.TagCue"
+metadata/_custom_type_script = "uid://kq4ftwrcls28"
+
+[resource]
+script = ExtResource("1_hf34i")
+available_tags = {
+"Test.Tag": SubResource("Resource_w4o56"),
+"Test.TagCue": SubResource("Resource_lvu40")
+}
+metadata/_custom_type_script = "uid://cqntyk5vh5kv7"

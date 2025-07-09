@@ -10,14 +10,14 @@
 	set(value):
 		base_name = _strip_cue_from_name(value)
 	get:
-		return _get_flat_name()
+		return get_flat_name()
 
 var base_name: String
 
 
 ## Internal function, used to get the full flat name of a GameplayTag this will
 ## prefix the base_name with "Cue." if it is_cue and doesn't already have a prefix
-func _get_flat_name() -> String:
+func get_flat_name() -> String:
 	if is_cue and not base_name.to_lower().begins_with("cue."):
 		return "%s%s" % ["Cue.", base_name]
 	return base_name
