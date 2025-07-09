@@ -67,7 +67,7 @@ func force_remove_tag(tag: ManaTag) -> void:
 
 ## Description: Removes all tags granted by that source
 ## Usage: Used to clean up tags when a system ends
-func remove_tags_by_source(source: Node) -> void:
+func remove_tags_from_source(source: Node) -> void:
 	var tags_to_remove: Array[String] = []
 
 	for flat_name in tags.keys():
