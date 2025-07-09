@@ -1,9 +1,8 @@
 ## Mana System Plugin (Modular Ability & Networked Attributes)
 ## Created by Matthew Janes (IndieGameDad) - 2025
-##
-## System: All
-## The main Plugin Class for the entire System
 
+## Main plugin class responsible for registering and managing all MANA editor tools.
+## Initializes custom inspectors, panels, and registry loaders for the plugin.
 @tool class_name ManaSystem extends EditorPlugin
 
 

@@ -1,13 +1,9 @@
 ## Mana System Plugin (Modular Ability & Networked Attributes)
 ## Created by Matthew Janes (IndieGameDad) - 2025
-##
-## System: Mana Tag System
+
 ## The core tag resource representing a single gameplay tag with metadata like category and cue status.
 ## Used across all MANA systems for tag-based logic, classification, filtering, and identification.
-
-
 @tool class_name ManaTag extends Resource
-
 
 @export var is_cue: bool = false
 @export var tag_name: String:

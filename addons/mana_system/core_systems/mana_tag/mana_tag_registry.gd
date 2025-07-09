@@ -1,13 +1,9 @@
 ## Mana System Plugin (Modular Ability & Networked Attributes)
 ## Created by Matthew Janes (IndieGameDad) - 2025
-##
-## System: Mana Tag System
+
 ## Centralized registry that stores all available ManaTags in the project.
 ## Supports tag lookup, validation, categorization, and tree-structure generation.
-
-
 @tool class_name ManaTagRegistry extends Resource
-
 
 @export var available_tags: Dictionary = {} # flat_name (String) -> ManaTag
 

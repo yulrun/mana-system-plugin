@@ -1,13 +1,9 @@
 ## Mana System Plugin (Modular Ability & Networked Attributes)
 ## Created by Matthew Janes (IndieGameDad) - 2025
-##
-## System: Mana Tag System
+
 ## A flexible tag container that stores active ManaTags and their sources.
 ## Provides powerful query, merge, and modification helpers for tag-based systems.
-
-
 @tool class_name ManaTagContainer extends Resource
-
 
 signal tag_added(tag: ManaTag, source: Node)
 signal tag_removed(tag: ManaTag, source: Node)
@@ -18,9 +14,10 @@ signal tag_removed(tag: ManaTag, source: Node)
 	get():
 		return get_flat_tag_names()
 
-# key: flat_name {
-#		"resource": ManaTag,
-#		"sources": Array[Node]}
+# flat_name {
+#	 resource = ManaTag,
+#	 sources = Array[Node]
+# }
 var tags: Dictionary = {}
 
 
