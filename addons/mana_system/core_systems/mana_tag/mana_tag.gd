@@ -2,19 +2,22 @@
 ## Created by Matthew Janes (IndieGameDad) - 2025
 ##
 ## System: Mana Tag System
-## The Main resource for the ManaTag System, used throughout the plugin
+## The core tag resource representing a single gameplay tag with metadata like category and cue status.
+## Used across all MANA systems for tag-based logic, classification, filtering, and identification.
+
 
 @tool class_name ManaTag extends Resource
 
 
+@export var is_cue: bool = false
 @export var tag_name: String:
 	set(value):
 		base_name = _strip_cue_from_name(value)
 	get:
 		return _get_flat_name()
-@export var is_cue: bool = false
 
 var base_name: String
+
 
 ## Internal function, used to get the full flat name of a GameplayTag this will
 ## prefix the base_name with "Cue." if it is_cue and doesn't already have a prefix

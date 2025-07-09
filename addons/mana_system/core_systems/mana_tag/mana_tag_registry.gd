@@ -2,7 +2,9 @@
 ## Created by Matthew Janes (IndieGameDad) - 2025
 ##
 ## System: Mana Tag System
-## The Main registry for the ManaTag System, used throughout the plugin
+## Centralized registry that stores all available ManaTags in the project.
+## Supports tag lookup, validation, categorization, and tree-structure generation.
+
 
 @tool class_name ManaTagRegistry extends Resource
 
