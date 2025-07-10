@@ -39,7 +39,10 @@ func get_tag_by_flat_name(flat_name: String) -> ManaTag:
 ## Description: Returns an array of all flat tag names from registered tags
 ## Usage: Used for filtering, validation, and duplication checking
 func get_all_flat_names() -> Array[String]:
-	return available_tags.keys()
+	var result: Array[String] = []
+	for key in available_tags.keys():
+		result.append(key)
+	return result
 
 
 ## Description: Returns true if a tag with the given flat name exists

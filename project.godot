@@ -15,7 +15,7 @@ config/features=PackedStringArray("4.5", "GL Compatibility")
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/mana_system/plugin.cfg")
+enabled=PackedStringArray("res://addons/mana_system/plugin.cfg", "res://addons/string_wrangler/plugin.cfg")
 
 [rendering]
 

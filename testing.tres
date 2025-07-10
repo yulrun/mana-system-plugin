@@ -4,5 +4,4 @@
 
 [resource]
 script = ExtResource("1_qan2t")
-MTag_test_array = Array[String](["Test.NewTag", "Test.Tag", "New.Test"])
 metadata/_custom_type_script = "uid://dbjvt0mv7214y"

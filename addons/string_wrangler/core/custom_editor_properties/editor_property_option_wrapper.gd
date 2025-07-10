@@ -1,4 +1,4 @@
-## Mana System Plugin (Modular Ability & Networked Attributes)
+## String Wrangler
 ## Created by Matthew Janes (IndieGameDad) - 2025
 
 ## Editor wrapper for OptionButton controls used in suffix-handled dropdowns.

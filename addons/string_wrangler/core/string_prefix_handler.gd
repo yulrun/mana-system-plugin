@@ -3,29 +3,7 @@
 
 ## Inspector prefix handler for exposing tag dropdowns based on property name prefix.
 ## Supports single and multi-tag properties using MTag_ prefix for gameplay tags.
-@tool class_name ManaVariablePrefixHandler extends EditorInspectorPlugin
-
-var gameplay_tags_resource: ManaTagRegistry = ManaSystem.get_mana_tag_registry()
-var prefix_handlers: Dictionary = {}
-
-
-## Description: Registers all known prefix handlers and their UI generation logic.
-## Usage: Called once per inspector parse to initialize handler dispatch map.
-## Adds support for tag, attribute, and future prefix-based systems.
-## NOTE If this function gets update, must reload editor for effects to apply
-func _initialize_prefix_handlers() -> void:
-	if prefix_handlers.size() > 0:
-		return # Already Initialized
-	
-	prefix_handlers[ManaSystem.VARIABLE_PREFIX_TAG] = {
-		"get_list_name": "ManaTag List",
-		"get_choices": func() -> Array[String]:
-			var tags: Array[String] = []
-			for tag in gameplay_tags_resource.get_all_non_cue_tags():
-				tags.append(tag.get_flat_name())
-			return tags,
-		"show_none": true
-	}
+@tool class_name StringPrefixHandler extends EditorInspectorPlugin
 
 
 ### Determines if this suffix handler applies to the given object.
@@ -38,25 +16,29 @@ func _can_handle(object: Object) -> bool:
 ## Only applies to properties ending in _mana_taglist.
 ## Routes handling to internal logic for tag dropdowns.
 func _parse_property(object: Object, type: Variant.Type, name: String, hint: PropertyHint, hint_text: String, usage: int, wide: bool) -> bool:
-	_initialize_prefix_handlers()
-	
 	var prefix: String = name.split("_")[0] + "_"
-	if prefix_handlers.has(prefix):
-		return _handle_prefixed_property(object, type, name, prefix, prefix_handlers[prefix])
+
+	if StringWrangler.get_prefix_registry().has(prefix):
+		return _handle_prefixed_property(object, type, name, prefix)
 	return false
 
 
 ## Builds tag editor widgets for string or array properties.
 ## Handles OptionButton or MultiTagEditorProperty creation.
 ## Applies cue filtering and dynamic label formatting.
-func _handle_prefixed_property(object: Object, type: Variant.Type, name: String, prefix: String, handler: Dictionary) -> bool:
+func _handle_prefixed_property(object: Object, type: Variant.Type, name: String, prefix: String) -> bool:
 	var clean_label: String = name.substr(prefix.length()).capitalize()
+	
+	var data_set: Array[String] = StringWrangler.get_prefix_registry().get_dataset(prefix)
+	var list_name: String = StringWrangler.get_prefix_registry().get_label(prefix)
+	var show_none: bool = StringWrangler.get_prefix_registry().get_show_none(prefix)
+	var allow_duplicates: bool = StringWrangler.get_prefix_registry().get_allow_duplicates(prefix)
 	
 	match type:
 		TYPE_STRING:
-			var choices: Array[String] = handler.get_choices.call()
+			var choices: Array[String] = data_set
 			var current_value: String = object.get(name)
-			var dropdown_data: Dictionary = _create_dropdown(choices, current_value, handler.show_none)
+			var dropdown_data: Dictionary = _create_dropdown(choices, current_value, show_none)
 			var editor: EditorProperty = EditorPropertyOptionWrapper.new(dropdown_data.dropdown, dropdown_data.show_none)
 			add_property_editor(name, editor, false, clean_label)
 			return true
@@ -66,7 +48,7 @@ func _handle_prefixed_property(object: Object, type: Variant.Type, name: String,
 			# Ensure all array values are Strings
 			if array_val.all(func(x): return typeof(x) == TYPE_STRING):
 				var editor: MultiOptionEditorProperty = MultiOptionEditorProperty.new()
-				editor.initialize(array_val, handler.get_choices.call(), handler.get_list_name)
+				editor.initialize(array_val, data_set, list_name, allow_duplicates)
 				add_property_editor(name, editor, false, clean_label)
 				return true
 	

@@ -8,15 +8,11 @@
 
 const VARIABLE_PREFIX_TAG: String = "MTag_"
 
-var mana_suffix_handler_plugin: ManaVariablePrefixHandler
-
 ## Registry Paths
 const MANA_TAG_REGISTRY_PATH: String = "res://addons/mana_system/data/mana_tag_registry.tres"
 
 
 func _enter_tree() -> void:
-	mana_suffix_handler_plugin = ManaVariablePrefixHandler.new()
-	add_inspector_plugin(mana_suffix_handler_plugin)
 	add_control_to_bottom_panel(Control.new(), "Mana System")
 	
 	var refs: EditorFileSystem = get_editor_interface().get_resource_filesystem()
@@ -25,8 +21,7 @@ func _enter_tree() -> void:
 
 
 func _exit_tree() -> void:
-	if mana_suffix_handler_plugin:
-		remove_inspector_plugin(mana_suffix_handler_plugin)
+	pass
 
 
 func _update_dynamic_enums() -> void:

@@ -1,4 +1,4 @@
-## Mana System Plugin (Modular Ability & Networked Attributes)
+## String Wrangler
 ## Created by Matthew Janes (IndieGameDad) - 2025
 
 ## A generic editor property for selecting multiple string options.
@@ -17,14 +17,17 @@ var main_container: VBoxContainer
 
 var list_display_name: String = ""
 
+var include_duplicates: bool = false
+
 
 ## Initializes the editor with a list of selectable values and currently selected items.
-## Called by the ManaVariablePrefixHandler to setup multi-value dropdown UI.
-func initialize(initial_values: Array[String], options: Array[String], list_name: String = "ManaSystemList") -> void:
+## Called by the StringPrefixHandler to setup multi-value dropdown UI.
+func initialize(initial_values: Array[String], options: Array[String], list_name: String = "StringList", allow_duplicates: bool = false) -> void:
 	available_options = options.duplicate()
 	selected_options.clear()
 	
 	list_display_name = list_name
+	include_duplicates = allow_duplicates
 	
 	for item in initial_values:
 		if available_options.has(item):
@@ -64,7 +67,7 @@ func _on_fold_button_toggled(pressed: bool) -> void:
 
 
 ## Updates the fold button text to include current selected item count.
-## Example: "ManaSystemList (3)"
+## Example: "StringList (3)"
 func _update_fold_button_text() -> void:
 	fold_button.text = "%s (%d)" % [list_display_name, selected_options.size()]
 
@@ -111,7 +114,7 @@ func _build_row(index: int) -> void:
 	for option in available_options:
 		var idx: int = dropdown.item_count
 		dropdown.add_item(option)
-		if used.has(option):
+		if not include_duplicates and used.has(option):
 			dropdown.set_item_disabled(idx, true)
 	
 	var current_index: int = available_options.find(selected_options[index])
@@ -162,6 +165,9 @@ func _on_add_pressed() -> void:
 ## Returns a list of options that have not yet been selected.
 ## Used to prevent duplicates and disable Add button when all are used.
 func _get_unused_options() -> Array[String]:
+	if include_duplicates:
+		return available_options
+		
 	var result: Array[String] = []
 	for item in available_options:
 		if not selected_options.has(item):
