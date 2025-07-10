@@ -4,5 +4,6 @@
 
 [resource]
 script = ExtResource("1_4d3ck")
+test_mana_taglist = "Test.NewTag"
 test_array_mana_taglist = Array[String](["Test.Tag"])
 metadata/_custom_type_script = "uid://dbjvt0mv7214y"

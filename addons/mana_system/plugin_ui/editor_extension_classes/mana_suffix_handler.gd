@@ -30,58 +30,53 @@ func _parse_property(object: Object, type: Variant.Type, name: String, hint: Pro
 ## Applies cue filtering and dynamic label formatting.
 func _handle_gameplay_tags(object: Object, type: Variant.Type, name: String, hint: PropertyHint, hint_text: String, usage: int, wide: bool) -> bool:
 	var clean_label: String = name.substr(0, name.length() - ManaSystem.SUFFIX_HANDLE_TAGLIST.length()).capitalize()
+	
+	match type:
+		TYPE_STRING: # Single tag string dropdown
+			var tag_names: Array[String] = []
+			for tag in gameplay_tags_resource.get_all_non_cue_tags():
+				tag_names.append(tag.get_flat_name())
 
-	# Single tag string dropdown
-	if type == TYPE_STRING:
-		var tag_names: Array[String] = []
-		for tag in gameplay_tags_resource.get_all_non_cue_tags():
-			tag_names.append(tag.get_flat_name())
-
-		var current_value: String = object.get(name)
-
-		var dropdown: OptionButton = _create_dropdown(tag_names, current_value, false, func(index: int, dropdown_ref: OptionButton) -> void:
-				var selected_tag: String = "" if index == 0 else dropdown_ref.get_item_text(index)
-				object.set(name, selected_tag)
-		)
-
-		var editor: EditorProperty = EditorPropertyOptionWrapper.new(dropdown)
-		add_property_editor(name, editor, false, clean_label)
-		return true
-
-	# Multi-tag array editor
-	if type == TYPE_ARRAY:
-		var array_val = object.get(name)
-		if typeof(array_val) == TYPE_ARRAY and array_val.all(func(x): return typeof(x) == TYPE_STRING):
-			var editor: MultiTagEditorProperty = MultiTagEditorProperty.new()
-			editor.initialize(array_val, gameplay_tags_resource, false)
-			editor.set_read_only(false)
+			var current_value: String = object.get(name)
+			var dropdown_data: Dictionary = _create_dropdown(tag_names, current_value, true)
+			var editor: EditorProperty = EditorPropertyOptionWrapper.new(dropdown_data.dropdown, dropdown_data.show_none)
 			add_property_editor(name, editor, false, clean_label)
 			return true
-
+		
+		TYPE_ARRAY: # Multi-tag array editor
+			var array_val = object.get(name)
+			if typeof(array_val) == TYPE_ARRAY and array_val.all(func(x): return typeof(x) == TYPE_STRING):
+				var editor: MultiTagEditorProperty = MultiTagEditorProperty.new()
+				editor.initialize(array_val, gameplay_tags_resource, false)
+				editor.set_read_only(false)
+				add_property_editor(name, editor, false, clean_label)
+				return true
+		
 	return false
 
 
 ## Creates a reusable dropdown selector from an array of strings.
-## Supports optional '[None]' entry and a callback for selection logic.
-func _create_dropdown(choices: Array[String], current_value: String, show_none: bool, on_select: Callable) -> OptionButton:
+## Supports optional 'None' entry and a callback for selection logic.
+func _create_dropdown(choices: Array[String], current_value: String, show_none: bool) -> Dictionary:
 	var dropdown: OptionButton = OptionButton.new()
+	
 	if show_none:
-		dropdown.add_item("[None]")
-
+		dropdown.add_item("(None)")
+	
 	for choice in choices:
 		dropdown.add_item(choice)
-
+	
 	var offset: int = 1 if show_none else 0
 	var found_index: int = 0
+	
 	for i in range(offset, dropdown.item_count):
 		if dropdown.get_item_text(i) == current_value:
 			found_index = i
 			break
-
+	
 	dropdown.select(found_index)
-
-	dropdown.item_selected.connect(func(index: int) -> void:
-		on_select.call(index, dropdown)
-	)
-
-	return dropdown
+	
+	return {
+		"dropdown" = dropdown,
+		"show_none" = show_none
+	}
