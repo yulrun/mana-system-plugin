@@ -6,16 +6,16 @@
 @tool class_name ManaSystem extends EditorPlugin
 
 
-const SUFFIX_HANDLE_TAGLIST: String = "mana_taglist"
+const VARIABLE_PREFIX_TAG: String = "MTag_"
 
-var mana_suffix_handler_plugin: ManaSuffixHandler
+var mana_suffix_handler_plugin: ManaVariablePrefixHandler
 
 ## Registry Paths
 const MANA_TAG_REGISTRY_PATH: String = "res://addons/mana_system/data/mana_tag_registry.tres"
 
 
 func _enter_tree() -> void:
-	mana_suffix_handler_plugin = ManaSuffixHandler.new()
+	mana_suffix_handler_plugin = ManaVariablePrefixHandler.new()
 	add_inspector_plugin(mana_suffix_handler_plugin)
 	add_control_to_bottom_panel(Control.new(), "Mana System")
 	

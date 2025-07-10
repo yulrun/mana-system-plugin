@@ -1,9 +1,9 @@
 ## MANA System Plugin (Modular Ability & Networked Attributes)
 ## Created by Matthew Janes (IndieGameDad) - 2025
 
-## Inspector suffix handler for exposing tag dropdowns based on property name suffix.
-## Supports single and multi-tag properties using _mana_taglist suffix.
-@tool class_name ManaSuffixHandler extends EditorInspectorPlugin
+## Inspector prefix handler for exposing tag dropdowns based on property name prefix.
+## Supports single and multi-tag properties using MTag_ prefix for gameplay tags.
+@tool class_name ManaVariablePrefixHandler extends EditorInspectorPlugin
 
 var gameplay_tags_resource: ManaTagRegistry = ManaSystem.get_mana_tag_registry()
 
@@ -19,8 +19,8 @@ func _can_handle(object: Object) -> bool:
 ## Only applies to properties ending in _mana_taglist.
 ## Routes handling to internal logic for tag dropdowns.
 func _parse_property(object: Object, type: Variant.Type, name: String, hint: PropertyHint, hint_text: String, usage: int, wide: bool) -> bool:
-	if name.ends_with(ManaSystem.SUFFIX_HANDLE_TAGLIST):
-		return _handle_gameplay_tags(object, type, name, hint, hint_text, usage, wide)
+	if name.begins_with(ManaSystem.VARIABLE_PREFIX_TAG):
+		return _handle_gameplay_tags(object, type, name)
 	
 	return false
 
@@ -28,8 +28,8 @@ func _parse_property(object: Object, type: Variant.Type, name: String, hint: Pro
 ## Builds tag editor widgets for string or array properties.
 ## Handles OptionButton or MultiTagEditorProperty creation.
 ## Applies cue filtering and dynamic label formatting.
-func _handle_gameplay_tags(object: Object, type: Variant.Type, name: String, hint: PropertyHint, hint_text: String, usage: int, wide: bool) -> bool:
-	var clean_label: String = name.substr(0, name.length() - ManaSystem.SUFFIX_HANDLE_TAGLIST.length()).capitalize()
+func _handle_gameplay_tags(object: Object, type: Variant.Type, name: String) -> bool:
+	var clean_label: String = name.substr(ManaSystem.VARIABLE_PREFIX_TAG.length()).capitalize()
 	
 	match type:
 		TYPE_STRING: # Single tag string dropdown

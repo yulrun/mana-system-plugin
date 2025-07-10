@@ -1,9 +1,0 @@
-[gd_resource type="Resource" script_class="Testing" load_steps=2 format=3 uid="uid://s0imhvmb5pkx"]
-
-[ext_resource type="Script" uid="uid://dbjvt0mv7214y" path="res://testing.gd" id="1_4d3ck"]
-
-[resource]
-script = ExtResource("1_4d3ck")
-test_mana_taglist = "Test.NewTag"
-test_array_mana_taglist = Array[String](["Test.Tag"])
-metadata/_custom_type_script = "uid://dbjvt0mv7214y"
