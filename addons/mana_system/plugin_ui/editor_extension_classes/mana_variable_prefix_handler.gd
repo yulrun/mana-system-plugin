@@ -6,6 +6,7 @@
 @tool class_name ManaVariablePrefixHandler extends EditorInspectorPlugin
 
 var gameplay_tags_resource: ManaTagRegistry = ManaSystem.get_mana_tag_registry()
+var prefix_handlers: Dictionary = {}
 
 
 ### Determines if this suffix handler applies to the given object.
@@ -19,39 +20,61 @@ func _can_handle(object: Object) -> bool:
 ## Only applies to properties ending in _mana_taglist.
 ## Routes handling to internal logic for tag dropdowns.
 func _parse_property(object: Object, type: Variant.Type, name: String, hint: PropertyHint, hint_text: String, usage: int, wide: bool) -> bool:
-	if name.begins_with(ManaSystem.VARIABLE_PREFIX_TAG):
-		return _handle_gameplay_tags(object, type, name)
+	_initialize_prefix_handlers()
 	
+	var prefix: String = name.split("_")[0] + "_"
+	if prefix_handlers.has(prefix):
+		return _handle_prefixed_property(object, type, name, prefix, prefix_handlers[prefix])
 	return false
+
+
+## Description: Registers all known prefix handlers and their UI generation logic.
+## Usage: Called once per inspector parse to initialize handler dispatch map.
+## Adds support for tag, attribute, and future prefix-based systems.
+func _initialize_prefix_handlers() -> void:
+	if prefix_handlers.size() > 0:
+		return # Already Initialized
+	
+	prefix_handlers[ManaSystem.VARIABLE_PREFIX_TAG] = {
+		"get_choices": func() -> Array[String]:
+			var tags: Array[String] = []
+			for tag in gameplay_tags_resource.get_all_non_cue_tags():
+				tags.append(tag.get_flat_name())
+			return tags,
+
+		"create_array_editor": func(array_val: Array[String]) -> EditorProperty:
+			var editor: MultiTagEditorProperty = MultiTagEditorProperty.new()
+			editor.initialize(array_val, gameplay_tags_resource, false)
+			editor.set_read_only(false)
+			return editor,
+
+		"show_none": true
+	}
 
 
 ## Builds tag editor widgets for string or array properties.
 ## Handles OptionButton or MultiTagEditorProperty creation.
 ## Applies cue filtering and dynamic label formatting.
-func _handle_gameplay_tags(object: Object, type: Variant.Type, name: String) -> bool:
-	var clean_label: String = name.substr(ManaSystem.VARIABLE_PREFIX_TAG.length()).capitalize()
-	
-	match type:
-		TYPE_STRING: # Single tag string dropdown
-			var tag_names: Array[String] = []
-			for tag in gameplay_tags_resource.get_all_non_cue_tags():
-				tag_names.append(tag.get_flat_name())
+func _handle_prefixed_property(object: Object, type: Variant.Type, name: String, prefix: String, handler: Dictionary) -> bool:
+	var clean_label: String = name.substr(prefix.length()).capitalize()
 
+	match type:
+		TYPE_STRING:
+			var choices: Array[String] = handler.get_choices.call()
 			var current_value: String = object.get(name)
-			var dropdown_data: Dictionary = _create_dropdown(tag_names, current_value, true)
+			var dropdown_data: Dictionary = _create_dropdown(choices, current_value, handler.show_none)
 			var editor: EditorProperty = EditorPropertyOptionWrapper.new(dropdown_data.dropdown, dropdown_data.show_none)
 			add_property_editor(name, editor, false, clean_label)
 			return true
-		
-		TYPE_ARRAY: # Multi-tag array editor
+
+		TYPE_ARRAY:
 			var array_val = object.get(name)
-			if typeof(array_val) == TYPE_ARRAY and array_val.all(func(x): return typeof(x) == TYPE_STRING):
-				var editor: MultiTagEditorProperty = MultiTagEditorProperty.new()
-				editor.initialize(array_val, gameplay_tags_resource, false)
-				editor.set_read_only(false)
+			# Ensure all array values are Strings
+			if array_val.all(func(x): return typeof(x) == TYPE_STRING):
+				var editor: EditorProperty = handler.create_array_editor.call(array_val)
 				add_property_editor(name, editor, false, clean_label)
 				return true
-		
+
 	return false
 
 
