@@ -5,9 +5,6 @@
 ## Dynamically disables already-selected entries and supports clean UI expansion.
 @tool class_name MultiOptionEditorProperty extends EditorProperty
 
-@onready var ICON_ADD: Texture2D = get_theme_icon("Add", "EditorIcons")
-@onready var ICON_REMOVE: Texture2D = get_theme_icon("Remove", "EditorIcons")
-
 var available_options: Array[String] = []
 var selected_options: Array[String] = []
 
@@ -88,7 +85,7 @@ func _refresh() -> void:
 		_build_row(i)
 	
 	var add_button: Button = Button.new()
-	add_button.icon = ICON_ADD
+	add_button.icon = get_theme_icon("Add", "EditorIcons")
 	add_button.text = "Add Item"
 	add_button.focus_mode = Control.FOCUS_NONE
 	add_button.disabled = _get_unused_options().is_empty()
@@ -132,7 +129,7 @@ func _build_row(index: int) -> void:
 	)
 	
 	var remove: Button = Button.new()
-	remove.icon = ICON_REMOVE
+	remove.icon = get_theme_icon("Remove", "EditorIcons")
 	remove.tooltip_text = "Remove Item"
 	remove.focus_mode = Control.FOCUS_NONE
 	remove.pressed.connect(func() -> void:
