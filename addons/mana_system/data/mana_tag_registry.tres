@@ -1,7 +1,12 @@
-[gd_resource type="Resource" script_class="ManaTagRegistry" load_steps=6 format=3 uid="uid://cw5lhkc5qshls"]
+[gd_resource type="Resource" script_class="ManaTagRegistry" load_steps=7 format=3 uid="uid://cw5lhkc5qshls"]
 
 [ext_resource type="Script" uid="uid://kq4ftwrcls28" path="res://addons/mana_system/core_systems/mana_tag/mana_tag.gd" id="1_5eev1"]
 [ext_resource type="Script" uid="uid://cqntyk5vh5kv7" path="res://addons/mana_system/core_systems/mana_tag/mana_tag_registry.gd" id="1_hf34i"]
+
+[sub_resource type="Resource" id="Resource_ajfi6"]
+script = ExtResource("1_5eev1")
+tag_name = "New.Test"
+metadata/_custom_type_script = "uid://kq4ftwrcls28"
 
 [sub_resource type="Resource" id="Resource_5eev1"]
 script = ExtResource("1_5eev1")
@@ -22,6 +27,7 @@ metadata/_custom_type_script = "uid://kq4ftwrcls28"
 [resource]
 script = ExtResource("1_hf34i")
 available_tags = {
+"New.Test": SubResource("Resource_ajfi6"),
 "Test.NewTag": SubResource("Resource_5eev1"),
 "Test.Tag": SubResource("Resource_w4o56"),
 "Test.TagCue": SubResource("Resource_lvu40")
