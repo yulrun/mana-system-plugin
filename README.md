@@ -3,7 +3,7 @@
   <img src="./docs/mana-logo.svg" alt="MANA System Logo" height="200">
 </p>
 <p align="center">
-  <a href="https://tiptopjar.com/IndieGameDad">💸 Leave a tip, support the project!</a>
+  <a href="https://ko-fi.com/indiegamedad">☕ Buy me a Coffee!</a>
 </p>
 
 # MANA System (Modular Ability & Networked Attributes)
